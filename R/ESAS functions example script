@@ -1,3 +1,6 @@
+#Example data available at: 
+https://drive.google.com/drive/folders/1mX26tLMC9qZpAIOeAMsS9ng5wPsL1_vH?usp=drive_link
+
 #read tables:
 Campaigns <- Read_ESAS_table(unique_part_of_table_name = "camp", pathway = "./Data/", fileEnc = "UTF-8")
 Samples <- Read_ESAS_table(unique_part_of_table_name = "samp", pathway = "./Data/", fileEnc = "UTF-8")
