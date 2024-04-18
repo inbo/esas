@@ -1,3 +1,6 @@
+#Example data available at: 
+https://drive.google.com/drive/folders/1mX26tLMC9qZpAIOeAMsS9ng5wPsL1_vH?usp=drive_link
+
 #Source
 source("./Scripts/ESAS functions.R")
 
