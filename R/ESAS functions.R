@@ -3,58 +3,61 @@ require(httr)
 require(jsonlite)
 
 #Read data:
-Read_ESAS_table <- function(unique_part_of_table_name, pathway, fileEnc)
+Read_ESAS_tables <- function(pathway, file_encoding)
 {
-  filenames <- list.files(pathway, full.names = FALSE)
+  filenames <- list.files(pathway, full.names = TRUE)
   
-  ESAS_table <- read.csv(
-    paste(pathway, filenames[grepl(unique_part_of_table_name, filenames, ignore.case = TRUE)], sep = ""), 
-    fileEncoding = fileEnc)
+  camp <- read.csv(filenames[grepl("camp", filenames, ignore.case = TRUE)], fileEncoding = file_encoding)
+  samp <- read.csv(filenames[grepl("samp", filenames, ignore.case = TRUE)], fileEncoding = file_encoding)
+  pos  <- read.csv(filenames[grepl("pos" , filenames, ignore.case = TRUE)], fileEncoding = file_encoding)
+  obs  <- read.csv(filenames[grepl("obs" , filenames, ignore.case = TRUE)], fileEncoding = file_encoding)
   
-  return(ESAS_table)
+  ESAS_tables <- list(camp, samp, pos, obs)
+  
+  return(ESAS_tables)
 }
 
 #Convert data to upload matrix:
-Convert_ESAS_tables_4_upload <- function(CampaignsTable, SamplesTable, PositionsTable, ObservationsTable, Data_provider, Country)
+Convert_ESAS_tables_4_upload <- function(campaigns_tbl, samples_tbl, positions_tbl, observations_tbl, data_provider, country)
 {
-  CampaignsTable <- CampaignsTable %>%
+  campaigns_tbl <- campaigns_tbl %>%
     mutate(RecordType = "EC") %>%
     relocate(RecordType)
   
-  SamplesTable <- SamplesTable %>%
+  samples_tbl <- samples_tbl %>%
     mutate(RecordType = "ES") %>%
     relocate(RecordType)
   
-  PositionsTable <- PositionsTable %>%
+  positions_tbl <- positions_tbl %>%
     mutate(RecordType = "EP") %>%
     relocate(RecordType)
   
-  ObservationsTable <- ObservationsTable %>%
+  observations_tbl <- observations_tbl %>%
     mutate(RecordType = "EO") %>%
     relocate(RecordType)
 
-  File_information <- matrix(nrow = 1, ncol = 18)
-  File_information[1, 1:3] <- c("FI", Data_provider, Country)
+  file_information <- matrix(nrow = 1, ncol = 18)
+  file_information[1,1:3] <- c("FI", data_provider, country)
   
   #convert to matrices
-  Campaigns_matrix <- matrix(nrow = nrow(CampaignsTable), ncol = 18)
-  Campaigns_matrix[, 1:6] <- as.matrix(CampaignsTable)
+  campaigns_matrix <- matrix(nrow = nrow(campaigns_tbl), ncol = 18)
+  campaigns_matrix[,1:6] <- as.matrix(campaigns_tbl)
   
-  Samples_matrix <- matrix(nrow = nrow(SamplesTable), ncol = 18)
-  Samples_matrix[,1:16] <- as.matrix(SamplesTable)
+  samples_matrix <- matrix(nrow = nrow(samples_tbl), ncol = 18)
+  samples_matrix[,1:16] <- as.matrix(samples_tbl)
   
-  Positions_matrix <- matrix(nrow = nrow(PositionsTable),ncol = 18)
-  Positions_matrix[, 1:16] <- as.matrix(PositionsTable)
+  positions_matrix <- matrix(nrow = nrow(positions_tbl), ncol = 18)
+  positions_matrix[,1:16] <- as.matrix(positions_tbl)
   
-  Observations_matrix <- matrix(nrow = nrow(ObservationsTable),ncol = 18)
-  Observations_matrix[, 1:18] <- as.matrix(ObservationsTable)
+  observations_matrix <- matrix(nrow = nrow(observations_tbl), ncol = 18)
+  observations_matrix[,1:18] <- as.matrix(observations_tbl)
   
   #bind matrices
-  ESAS_2_ICES <- rbind(File_information,
-                       Campaigns_matrix,
-                       Samples_matrix,
-                       Positions_matrix,
-                       Observations_matrix)
+  ESAS_2_ICES <- rbind(file_information,
+                       campaigns_matrix,
+                       samples_matrix,
+                       positions_matrix,
+                       observations_matrix)
   
   ESAS_2_ICES[is.na(ESAS_2_ICES)] <- ""
   ESAS_2_ICES <- as.data.frame(ESAS_2_ICES)
@@ -63,44 +66,48 @@ Convert_ESAS_tables_4_upload <- function(CampaignsTable, SamplesTable, Positions
 }
 
 #Export upload matrix:
-Export_ESAS_upload_matrix <- function(table, pathway, export_name, fileEnc)
+Export_ESAS_upload_matrix <- function(table, pathway, export_name, file_encoding)
 {
   write.table(table, paste(pathway, export_name, ".csv", sep = ""), 
               sep = "\t", 
               row.names = F, 
               col.names = F, 
               quote = F, 
-              fileEncoding = fileEnc)
+              fileEncoding = file_encoding)
   
 }
 
 #Download ESAS data per species:
-Download_ESAS_data <- function(Species)
+Download_ESAS_data <- function(species)
 {
-  Campaigns <- GET("https://esas.ices.dk/api/getCampaignRecords")
-  Samples <- GET("https://esas.ices.dk/api/getSampleRecords")
-  Positions <- GET("https://esas.ices.dk/api/getPositionRecords")
-  Observations <- GET(paste("https://esas.ices.dk/api/getObservationRecords?SpeciesCode=",as.character(Species),sep=""))
+  campaigns <- GET("https://esas.ices.dk/api/getCampaignRecords")
+  samples <- GET("https://esas.ices.dk/api/getSampleRecords")
+  positions <- GET("https://esas.ices.dk/api/getPositionRecords")
+  observations <- GET(paste("https://esas.ices.dk/api/getObservationRecords?SpeciesCode=", as.character(species), sep = ""))
   
-  Campaigns = fromJSON(rawToChar(Campaigns$content))
-  Campaigns = Campaigns$results
+  campaigns = fromJSON(rawToChar(campaigns$content))
+  campaigns = campaigns$results
   
-  Samples = fromJSON(rawToChar(Samples$content))
-  Samples = Samples$results
+  samples = fromJSON(rawToChar(samples$content))
+  samples = samples$results
   
-  Positions = fromJSON(rawToChar(Positions$content))
-  Positions = Positions$results
+  positions = fromJSON(rawToChar(positions$content))
+  positions = positions$results
   
-  Observations = fromJSON(rawToChar(Observations$content))
-  Observations = Observations$results
+  observations = fromJSON(rawToChar(observations$content))
+  observations = observations$results
   
-  ObservationsTable <- left_join(left_join(left_join(
-    Observations[,c("campaignID","sampleID","positionID","observationID","transect","speciesCode","count","observationDistance")],
-    Positions[,c("campaignID","sampleID","positionID","latitude","longitude","area")]),
-    Samples[,c("campaignID","sampleID","date")]),
-    Campaigns[,c("campaignID","dataRightsHolder","country")])
+  Species_observations_tbl <- left_join(left_join(left_join(
+    observations[,c("campaignID","sampleID","positionID","speciesScientificName","count","observationDistance")],
+    positions[,c("campaignID","sampleID","positionID","latitude","longitude")]),
+    samples[,c("campaignID","sampleID","date")]),
+    campaigns[,c("campaignID","dataRightsHolder","country")])
 
-  return(ObservationsTable)
+  Species_observations_tbl <- Species_observations_tbl %>%
+    select(date,latitude,longitude,speciesScientificName,count,observationDistance,dataRightsHolder,country) %>%
+    arrange(date)
+  
+  return(Species_observations_tbl)
 }
 #I think the API functionality is not very elegant for the moment; 
 #when selecting one year in campaigns for example, this same selection cannot be performed on the positions or observations table; 
@@ -110,3 +117,7 @@ Download_ESAS_data <- function(Species)
 #Screen data at ICES DC (API?)
 #Transform data from ICES DC to OBSALL / TOTALL type of tables
 #Transform data from ICES DC to TOTALLcorr type of table with distance corrected densities
+
+#Gesprek met Eric (18/04):
+#Het is misschien interessant om generieke distance correctiefactoren te berekenen, enkel uitgesplitst per methodiek, bvb
+#aerial & ship-based, in plaats van de distance analyse op zich mee op te nemen in de R pakket functies
