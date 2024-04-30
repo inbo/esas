@@ -5,7 +5,7 @@ source("./Scripts/ESAS functions.R")
 ESAS_TABLES_LIST <- Read_ESAS_Tables(pathway = "./Data/ESAS download 2024 04 30",
                                      file_encoding = "UTF-8")
 
-#Create ESAS master-table:
+#Create an ESAS master-table:
 ESAS_TABLE <- Create_ESAS_Table(esas_tables_list = ESAS_TABLES_LIST)
 
 
