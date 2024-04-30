@@ -148,49 +148,9 @@ Detection_Probabilities_Ship_Based_Surveys <- function(esas_table_2_analyse, spe
   return(probabilities %>% select(Species, Function, Detection_P_AVG))
 }
 
+# NOTE:
+# Om de één of andere reden wordt het veld "Transect" teruggegeven als character variabele ("True"/"False") terwijl deze
+# als boolean wordt opgeladen 
+# ISSUE AANMAKEN!!
 
-# #Download ESAS data per species:
-# Download_ESAS_data <- function(species)
-# {
-#   campaigns <- GET("https://esas.ices.dk/api/getCampaignRecords")
-#   samples <- GET("https://esas.ices.dk/api/getSampleRecords")
-#   positions <- GET("https://esas.ices.dk/api/getPositionRecords")
-#   observations <- GET(paste("https://esas.ices.dk/api/getObservationRecords?SpeciesCode=", as.character(species), sep = ""))
-#   
-#   campaigns = fromJSON(rawToChar(campaigns$content))
-#   campaigns = campaigns$results
-#   
-#   samples = fromJSON(rawToChar(samples$content))
-#   samples = samples$results
-#   
-#   positions = fromJSON(rawToChar(positions$content))
-#   positions = positions$results
-#   
-#   observations = fromJSON(rawToChar(observations$content))
-#   observations = observations$results
-#   
-#   Species_observations_tbl <- left_join(left_join(left_join(
-#     observations[,c("campaignID","sampleID","positionID","speciesScientificName","count","observationDistance")],
-#     positions[,c("campaignID","sampleID","positionID","latitude","longitude")]),
-#     samples[,c("campaignID","sampleID","date")]),
-#     campaigns[,c("campaignID","dataRightsHolder","country")])
-# 
-#   Species_observations_tbl <- Species_observations_tbl %>%
-#     select(date,latitude,longitude,speciesScientificName,count,observationDistance,dataRightsHolder,country) %>%
-#     arrange(date)
-#   
-#   return(Species_observations_tbl)
-# }
 
-#I think the API functionality is not very elegant for the moment; 
-#when selecting one year in campaigns for example, this same selection cannot be performed on the positions or observations table; 
-#note that this is perfectly possible in the "less technical" download page!
-
-#Functions to develop:
-#Screen data at ICES DC (API?)
-#Transform data from ICES DC to OBSALL / TOTALL type of tables
-#Transform data from ICES DC to TOTALLcorr type of table with distance corrected densities
-
-#Gesprek met Eric (18/04):
-#Het is misschien interessant om generieke distance correctiefactoren te berekenen, enkel uitgesplitst per methodiek, bvb
-#aerial & ship-based, in plaats van de distance analyse op zich mee op te nemen in de R pakket functies
