@@ -148,9 +148,9 @@ Detection_Probabilities_Ship_Based_Surveys <- function(esas_table_2_analyse, spe
   return(probabilities %>% select(Species, Function, Detection_P_AVG))
 }
 
-# NOTE:
+# NOOT:
 # Om de één of andere reden wordt het veld "Transect" teruggegeven als character variabele ("True"/"False") terwijl deze
 # als boolean wordt opgeladen 
-# ISSUE AANMAKEN!!
+# -> ISSUE AANMAKEN!!
 
 
