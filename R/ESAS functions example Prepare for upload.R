@@ -2,8 +2,8 @@
 source("./Scripts/ESAS functions.R")
 
 #Read 4 ESAS tables:
-ESAS_TABLES_LIST <- Read_ESAS_Tables(pathway = "./Data/", 
-                                file_encoding = "UTF-8")
+ESAS_TABLES_LIST <- Read_ESAS_Tables(pathway = "./Data/",
+                                     file_encoding = "UTF-8")
 
 #Convert tables to upload format:
 ESAS_4_UPLOAD <- Convert_ESAS_Tables_4_Upload(campaigns_tbl = ESAS_TABLES_LIST$CAMPAIGNS, 
@@ -13,13 +13,13 @@ ESAS_4_UPLOAD <- Convert_ESAS_Tables_4_Upload(campaigns_tbl = ESAS_TABLES_LIST$C
                                               data_provider = "202", 
                                               country = "BE")
 
-#write upload table:
+#Export upload table:
 Export_ESAS_Upload_Matrix(table = ESAS_4_UPLOAD, 
                           pathway = "./Output/", 
                           export_name = "ESAS_4_upload", 
                           file_encoding = "UTF-8")
 
-#test by comparing old and new matrix:
+#Test by comparing old and new matrix:
 test1 <- read.csv("./Output/ESAS_INBO_2024_01_31.csv", sep = "\t", header = F)
 test2 <- read.csv("./Output/ESAS_4_upload.csv", sep = "\t", header = F)
 
