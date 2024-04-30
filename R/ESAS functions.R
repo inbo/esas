@@ -1,9 +1,10 @@
 require(tidyverse)
 require(httr)
 require(jsonlite)
+require(Distance)
 
-#Read data:
-Read_ESAS_tables <- function(pathway, file_encoding)
+#Read data & convert to ESAS 'mega-table':
+Read_ESAS_Tables <- function(pathway, file_encoding)
 {
   filenames <- list.files(pathway, full.names = TRUE)
   
@@ -12,13 +13,23 @@ Read_ESAS_tables <- function(pathway, file_encoding)
   pos  <- read.csv(filenames[grepl("pos" , filenames, ignore.case = TRUE)], fileEncoding = file_encoding)
   obs  <- read.csv(filenames[grepl("obs" , filenames, ignore.case = TRUE)], fileEncoding = file_encoding)
   
-  ESAS_tables <- list(camp, samp, pos, obs)
+  tables_list <- list(CAMPAIGNS = camp, SAMPLES = samp, POSITIONS = pos, OBSERVATIONS = obs)
   
-  return(ESAS_tables)
-}
+  return(tables_list)
+}  
 
+Create_ESAS_Table <- function(esas_tables_list)   
+{
+  esas_table <- left_join(left_join(left_join(
+    esas_tables_list$OBSERVATIONS, esas_tables_list$POSITIONS), 
+    esas_tables_list$SAMPLES %>% rename(SampleNotes = Notes)), 
+    esas_tables_list$CAMPAIGNS %>% rename(CampaignNotes = Notes)) 
+  
+  return(esas_table)
+}
+  
 #Convert data to upload matrix:
-Convert_ESAS_tables_4_upload <- function(campaigns_tbl, samples_tbl, positions_tbl, observations_tbl, data_provider, country)
+Convert_ESAS_Tables_4_Upload <- function(campaigns_tbl, samples_tbl, positions_tbl, observations_tbl, data_provider, country)
 {
   campaigns_tbl <- campaigns_tbl %>%
     mutate(RecordType = "EC") %>%
@@ -66,7 +77,7 @@ Convert_ESAS_tables_4_upload <- function(campaigns_tbl, samples_tbl, positions_t
 }
 
 #Export upload matrix:
-Export_ESAS_upload_matrix <- function(table, pathway, export_name, file_encoding)
+Export_ESAS_Upload_Matrix <- function(table, pathway, export_name, file_encoding)
 {
   write.table(table, paste(pathway, export_name, ".csv", sep = ""), 
               sep = "\t", 
@@ -77,38 +88,100 @@ Export_ESAS_upload_matrix <- function(table, pathway, export_name, file_encoding
   
 }
 
-#Download ESAS data per species:
-Download_ESAS_data <- function(species)
+#Execute distance analysis on ship-based survey results:
+Detection_Probabilities_Ship_Based_Surveys <- function(esas_table_2_analyse, species_2_analyse)
 {
-  campaigns <- GET("https://esas.ices.dk/api/getCampaignRecords")
-  samples <- GET("https://esas.ices.dk/api/getSampleRecords")
-  positions <- GET("https://esas.ices.dk/api/getPositionRecords")
-  observations <- GET(paste("https://esas.ices.dk/api/getObservationRecords?SpeciesCode=", as.character(species), sep = ""))
+  DISTANCE <- esas_table_2_analyse %>%
+    filter(DistanceBins == "0|50|100|200|300",
+           PlatformClass == 30,
+           Transect == "True",
+           ObservationDistance != "F",
+           SpeciesCode %in% species_2_analyse,
+           Behaviour != "99",
+           ObservationDistance %in% c("A","B","C","D")) %>%
+    mutate(distance = recode(ObservationDistance, 
+                             "A" = 0.025, 
+                             "B" = 0.075, 
+                             "C" = 0.150, 
+                             "D" = 0.250)) %>% 
+    rename(Size = Count) %>%
+    select(PositionID, SpeciesCode, Size, distance)
   
-  campaigns = fromJSON(rawToChar(campaigns$content))
-  campaigns = campaigns$results
+  distance_model_list_HR <- vector('list', length(species_2_analyse))
+  distance_model_list_HN <- vector('list', length(species_2_analyse))
   
-  samples = fromJSON(rawToChar(samples$content))
-  samples = samples$results
+    for (i in c(1:length(species_2_analyse)))
+  {
+    Species2model <- species_2_analyse[i]
+    
+    distance_model_list_HR[[i]] <- 
+      ds(DISTANCE %>% filter(SpeciesCode == Species2model), 
+         cutpoints = c(0,.05,.1,.2,.3), truncation = 0.3, key = "hr", adjustment = NULL, formula = ~1)
+    
+    distance_model_list_HN[[i]] <- 
+      ds(DISTANCE %>% filter(SpeciesCode == Species2model), 
+         cutpoints = c(0,.05,.1,.2,.3), truncation = 0.3, key = "hn", adjustment = NULL, formula = ~1)
+  }
   
-  positions = fromJSON(rawToChar(positions$content))
-  positions = positions$results
+  probabilities <- as.data.frame(matrix(nrow = length(species_2_analyse), ncol = 5))
+  colnames(probabilities) <- c("Species","Detection_HR_P_AVG","Detection_HR_AIC","Detection_HN_P_AVG","Detection_HN_AIC")
+  probabilities$Species <- species_2_analyse
   
-  observations = fromJSON(rawToChar(observations$content))
-  observations = observations$results
+    for (i in c(1:length(species_2_analyse)))
+  {
+    probabilities[i,2]  <- summary(distance_model_list_HR[[i]])$ds$average.p
+    probabilities[i,3]  <- summary(distance_model_list_HR[[i]])$ds$aic
+    
+    probabilities[i,4]  <- summary(distance_model_list_HN[[i]])$ds$average.p
+    probabilities[i,5]  <- summary(distance_model_list_HN[[i]])$ds$aic
+  }
   
-  Species_observations_tbl <- left_join(left_join(left_join(
-    observations[,c("campaignID","sampleID","positionID","speciesScientificName","count","observationDistance")],
-    positions[,c("campaignID","sampleID","positionID","latitude","longitude")]),
-    samples[,c("campaignID","sampleID","date")]),
-    campaigns[,c("campaignID","dataRightsHolder","country")])
-
-  Species_observations_tbl <- Species_observations_tbl %>%
-    select(date,latitude,longitude,speciesScientificName,count,observationDistance,dataRightsHolder,country) %>%
-    arrange(date)
+  round_prob <- function(x) round(x, digits = 2)
   
-  return(Species_observations_tbl)
+  probabilities <- probabilities %>%
+    mutate(
+      Function = if_else(Detection_HR_AIC < Detection_HN_AIC, "HR", "HN"),
+      Detection_P_AVG = if_else(Detection_HR_AIC < Detection_HN_AIC, Detection_HR_P_AVG, Detection_HN_P_AVG)) %>%
+    mutate_at(
+      c("Detection_P_AVG"), round_prob)
+  
+  return(probabilities %>% select(Species, Function, Detection_P_AVG))
 }
+
+
+# #Download ESAS data per species:
+# Download_ESAS_data <- function(species)
+# {
+#   campaigns <- GET("https://esas.ices.dk/api/getCampaignRecords")
+#   samples <- GET("https://esas.ices.dk/api/getSampleRecords")
+#   positions <- GET("https://esas.ices.dk/api/getPositionRecords")
+#   observations <- GET(paste("https://esas.ices.dk/api/getObservationRecords?SpeciesCode=", as.character(species), sep = ""))
+#   
+#   campaigns = fromJSON(rawToChar(campaigns$content))
+#   campaigns = campaigns$results
+#   
+#   samples = fromJSON(rawToChar(samples$content))
+#   samples = samples$results
+#   
+#   positions = fromJSON(rawToChar(positions$content))
+#   positions = positions$results
+#   
+#   observations = fromJSON(rawToChar(observations$content))
+#   observations = observations$results
+#   
+#   Species_observations_tbl <- left_join(left_join(left_join(
+#     observations[,c("campaignID","sampleID","positionID","speciesScientificName","count","observationDistance")],
+#     positions[,c("campaignID","sampleID","positionID","latitude","longitude")]),
+#     samples[,c("campaignID","sampleID","date")]),
+#     campaigns[,c("campaignID","dataRightsHolder","country")])
+# 
+#   Species_observations_tbl <- Species_observations_tbl %>%
+#     select(date,latitude,longitude,speciesScientificName,count,observationDistance,dataRightsHolder,country) %>%
+#     arrange(date)
+#   
+#   return(Species_observations_tbl)
+# }
+
 #I think the API functionality is not very elegant for the moment; 
 #when selecting one year in campaigns for example, this same selection cannot be performed on the positions or observations table; 
 #note that this is perfectly possible in the "less technical" download page!
