@@ -5,10 +5,6 @@ source("./Scripts/ESAS functions.R")
 ESAS_TABLES_LIST <- Read_ESAS_Tables(pathway = "./Data/", 
                                 file_encoding = "UTF-8")
 
-#Create ESAS master-table:
-ESAS_TABLE <- Create_ESAS_Table(ESAS_TABLES_LIST)
-str(ESAS_TABLES_LIST$OBSERVATIONS)
-
 #Convert tables to upload format:
 ESAS_4_UPLOAD <- Convert_ESAS_Tables_4_Upload(campaigns_tbl = ESAS_TABLES_LIST$CAMPAIGNS, 
                                               samples_tbl = ESAS_TABLES_LIST$SAMPLES, 
@@ -31,5 +27,3 @@ library(arsenal)
 summary(comparedf(test1, test2))
 rm(test1, test2)
 
-# #download all observations of Gavia immer from ICES DC ESAS database 
-# Observations_Gavia_immer <- Download_ESAS_data(species = 40)
