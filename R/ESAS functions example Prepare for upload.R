@@ -6,7 +6,7 @@ ESAS_TABLES_LIST <- Read_ESAS_Tables(pathway = "./Data/",
                                      file_encoding = "UTF-8")
 
 #Convert tables to upload format:
-ESAS_4_UPLOAD <- Convert_ESAS_Tables_4_Upload(campaigns_tbl = ESAS_TABLES_LIST$CAMPAIGNS, 
+ESAS_4_UPLOAD <- Transform_ESAS_Tables_4_Upload(campaigns_tbl = ESAS_TABLES_LIST$CAMPAIGNS, 
                                               samples_tbl = ESAS_TABLES_LIST$SAMPLES, 
                                               positions_tbl = ESAS_TABLES_LIST$POSITIONS, 
                                               observations_tbl = ESAS_TABLES_LIST$OBSERVATIONS, 
@@ -25,5 +25,5 @@ test2 <- read.csv("./Output/ESAS_4_upload.csv", sep = "\t", header = F)
 
 library(arsenal)
 summary(comparedf(test1, test2))
-rm(test1, test2)
+
 
