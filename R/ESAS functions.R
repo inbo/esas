@@ -21,15 +21,15 @@ Read_ESAS_Tables <- function(pathway, file_encoding)
 Create_ESAS_Table <- function(esas_tables_list)   
 {
   esas_table <- left_join(left_join(left_join(
-    esas_tables_list$OBSERVATIONS, esas_tables_list$POSITIONS), 
-    esas_tables_list$SAMPLES %>% rename(SampleNotes = Notes)), 
-    esas_tables_list$CAMPAIGNS %>% rename(CampaignNotes = Notes)) 
-  
+    esas_tables_list$CAMPAIGNS %>% rename(CampaignNotes = Notes), esas_tables_list$SAMPLES %>% rename(SampleNotes = Notes)),
+    esas_tables_list$POSITIONS), 
+    esas_tables_list$OBSERVATIONS)
+    
   return(esas_table)
 }
   
 #Convert data to upload matrix:
-Convert_ESAS_Tables_4_Upload <- function(campaigns_tbl, samples_tbl, positions_tbl, observations_tbl, data_provider, country)
+Transform_ESAS_Tables_4_Upload <- function(campaigns_tbl, samples_tbl, positions_tbl, observations_tbl, data_provider, country)
 {
   campaigns_tbl <- campaigns_tbl %>%
     mutate(RecordType = "EC") %>%
@@ -89,7 +89,7 @@ Export_ESAS_Upload_Matrix <- function(table, pathway, export_name, file_encoding
 }
 
 #Execute distance analysis on ship-based survey results:
-Detection_Probabilities_Ship_Based_Surveys <- function(esas_table_2_analyse, species_2_analyse)
+Calculate_Detection_P_Ship_Based_Surveys <- function(esas_table_2_analyse, species_2_analyse)
 {
   DISTANCE <- esas_table_2_analyse %>%
     filter(DistanceBins == "0|50|100|200|300",
@@ -154,3 +154,53 @@ Detection_Probabilities_Ship_Based_Surveys <- function(esas_table_2_analyse, spe
 # -> ISSUE AANMAKEN!!
 
 
+#Create a cross-table with distance-corrected bird densities
+Create_Seabird_Density_Cross_Table <- function(esas_table, probabilities, species_selection)
+{
+  esas_table <- esas_table %>% filter(DistanceBins == "0|50|100|200|300", PlatformClass == 30)
+  
+  observations_select_fly <- esas_table %>%
+    filter(SpeciesCode %in% species_selection,
+           ObservationDistance == "F",
+           Transect == "True",
+           !Behaviour %in% c(99))
+  
+  observations_select_swim <- esas_table %>%
+    filter(SpeciesCode %in% species_selection, 
+           ObservationDistance != "F",
+           Transect == "True",
+           !Behaviour %in% c(99))
+  
+  probabilities <- probabilities %>% 
+    rename(SpeciesCode = Species) %>% 
+    select(SpeciesCode, Detection_P_AVG)
+  
+  observations_select_swim <- left_join(observations_select_swim, probabilities) %>%
+    mutate(Count = Count / Detection_P_AVG)
+  
+  observations_select <- rbind(observations_select_fly, observations_select_swim %>% select(!Detection_P_AVG))
+  
+  base <- esas_table %>% expand(PositionID, species_selection) %>%
+    rename(SpeciesCode = species_selection)
+  
+  som <- observations_select %>%
+    group_by(PositionID, SpeciesCode) %>%
+    summarise(Count = sum(Count)) 
+  
+  base_som <- left_join(base, som) %>%
+    spread(SpeciesCode, Count, fill = 0) %>%
+    arrange(PositionID)
+  
+  base_som <- as.data.frame(base_som)
+  
+  esas_densities_corr <- esas_table %>% 
+    distinct(PositionID, Date, Time, Area, Latitude, Longitude, SamplingMethod, TargetTaxa) 
+  
+  round_number <- function(x) round(x, digits = 2)
+  
+  esas_densities_corr <- left_join(esas_densities_corr, base_som) %>% 
+    arrange(Date, Time) %>%
+    mutate_at(paste(species_selection), round_number)
+  
+  return(esas_densities_corr)
+}
