@@ -24,6 +24,30 @@ ESAS_DENSITIES <- Create_Seabird_Density_Cross_Table(esas_table = ESAS_TABLE,
 head(ESAS_DENSITIES)
 summary(ESAS_DENSITIES)
 
-#test:
-test <- ESAS_TABLE %>% filter(DistanceBins == "0|50|100|200|300", PlatformClass == 30)
+#check number of rows:
+test <- ESAS_TABLE %>% filter(DistanceBins == "0|50|100|200|300", PlatformClass == 30, Area > 0)
 length(unique(test$PositionID))
+
+#graphical check
+library(sf)                   
+ESAS_DENSITIES_SF <- st_as_sf(ESAS_DENSITIES[ESAS_DENSITIES$Date > "2014-01-01",], 
+                              coords = c("Longitude","Latitude"), 
+                              crs = 4326)
+
+BPNS <- st_read("./Shapes/BPNS_polygon.shp")
+ggplot() + geom_sf(data = BPNS)
+BPNS <- st_transform(BPNS, crs = 4326)
+
+ESAS_DENSITIES_SF_BPNS <-  ESAS_DENSITIES_SF[BPNS,]
+
+ggplot() + 
+  geom_sf(data = BPNS, fill = NA) + 
+  geom_sf(data = ESAS_DENSITIES_SF_BPNS, col = "grey", size = 1) +
+  geom_sf(data = ESAS_DENSITIES_SF_BPNS %>% filter(`6020` > 0), col = "red3", aes(size = `6020`)) + 
+  labs(title = "Black-legged kittiwake", size = "Density (n/km²)")
+
+ggplot() + 
+  geom_sf(data = BPNS, fill = NA) +  
+  geom_sf(data = ESAS_DENSITIES_SF_BPNS, col = "grey", size = 1) +
+  geom_sf(data = ESAS_DENSITIES_SF_BPNS %>% filter(`720` > 0), col = "blue3", aes(size = `720`)) + 
+  labs(title = "Great cormorant", size = "Density (n/km²)")
