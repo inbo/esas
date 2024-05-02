@@ -11,8 +11,9 @@ ESAS_TABLE <- Create_ESAS_Table(esas_tables_list = ESAS_TABLES_LIST)
 
 #Execute distance analysis on selection of species:
 PROBABILITIES <- Calculate_Detection_P_Ship_Based_Surveys(esas_table_2_analyse = ESAS_TABLE,
-                                                                        species_2_analyse = c(720,6020))
+                                                          species_2_analyse = c(720,6020))
 
+#check outcome of proababilities:
 PROBABILITIES
 TEST <- read.csv("./Output/ESAS_probabilities.csv")
 TEST %>% filter(Species %in% c(720,6020))
@@ -25,8 +26,37 @@ head(ESAS_DENSITIES)
 summary(ESAS_DENSITIES)
 
 #check number of rows:
-test <- ESAS_TABLE %>% filter(DistanceBins == "0|50|100|200|300", PlatformClass == 30, Area > 0)
-length(unique(test$PositionID))
+TEST1 <- ESAS_TABLE %>% filter(DistanceBins %in% c("0|50|100|200|300"), PlatformClass %in% c("30"), Area > 0)
+length(unique(TEST1$PositionID))
+length(unique(TEST1$PositionID)) == nrow(ESAS_DENSITIES)
+
+#check outcome of densities:
+BASE_TEST <- ESAS_TABLE %>% filter(
+  DistanceBins %in% c("0|50|100|200|300"), 
+  PlatformClass %in% c(30), 
+  Area > 0,
+  Transect %in% c("True"),
+  !Behaviour %in% c(99))
+
+FLYING <- BASE_TEST %>% filter(
+  ObservationDistance %in% c("F"),
+  SpeciesCode == 6020) %>%
+  mutate(DENS = Count / Area)
+
+SWIMMING <- BASE_TEST %>% filter(
+  ObservationDistance %in% c("A","B","C","D"),
+  SpeciesCode == 6020) %>%
+  mutate(DENS = Count / (Area*0.54))
+
+TEST2 <- rbind(FLYING, SWIMMING) %>%
+  group_by(PositionID) %>%
+  summarise(DENS = sum(DENS))
+
+TEST2$DENS <- round(TEST2$DENS, digits = 2)
+
+sum(ESAS_DENSITIES$`6020`)
+sum(TEST2$DENS)
+sum(ESAS_DENSITIES$`6020`) == sum(TEST2$DENS)
 
 #graphical check
 library(sf)                   
