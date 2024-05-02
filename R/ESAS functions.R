@@ -92,13 +92,12 @@ Export_ESAS_Upload_Matrix <- function(table, pathway, export_name, file_encoding
 Calculate_Detection_P_Ship_Based_Surveys <- function(esas_table_2_analyse, species_2_analyse)
 {
   DISTANCE <- esas_table_2_analyse %>%
-    filter(DistanceBins == "0|50|100|200|300",
-           PlatformClass == 30,
-           Transect == "True",
-           ObservationDistance != "F",
+    filter(DistanceBins %in% c("0|50|100|200|300"),
+           PlatformClass %in% c(30),
+           Transect %in% c("True"),
+           ObservationDistance %in% c("A","B","C","D"),
            SpeciesCode %in% species_2_analyse,
-           Behaviour != "99",
-           ObservationDistance %in% c("A","B","C","D")) %>%
+           !Behaviour %in% c("99")) %>%
     mutate(distance = recode(ObservationDistance, 
                              "A" = 0.025, 
                              "B" = 0.075, 
@@ -157,20 +156,20 @@ Calculate_Detection_P_Ship_Based_Surveys <- function(esas_table_2_analyse, speci
 #Create a cross-table with distance-corrected bird densities
 Create_Seabird_Density_Cross_Table <- function(esas_table, probabilities, species_selection)
 {
-  esas_table <- esas_table %>% filter(DistanceBins == "0|50|100|200|300", 
-                                      PlatformClass == 30,
+  esas_table <- esas_table %>% filter(DistanceBins %in% c("0|50|100|200|300"), 
+                                      PlatformClass %in% c(30),
                                       Area > 0)
   
   observations_select_fly <- esas_table %>%
     filter(SpeciesCode %in% species_selection,
-           ObservationDistance == "F",
-           Transect == "True",
+           ObservationDistance %in% c("F"),
+           Transect %in% c("True"),
            !Behaviour %in% c(99))
   
   observations_select_swim <- esas_table %>%
     filter(SpeciesCode %in% species_selection, 
-           ObservationDistance != "F",
-           Transect == "True",
+           ObservationDistance %in% c("A","B","C","D"),
+           Transect %in% c("True"),
            !Behaviour %in% c(99))
   
   probabilities <- probabilities %>% 
