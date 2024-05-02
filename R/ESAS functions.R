@@ -149,15 +149,17 @@ Calculate_Detection_P_Ship_Based_Surveys <- function(esas_table_2_analyse, speci
 }
 
 # NOOT:
-# Om de één of andere reden wordt het veld "Transect" teruggegeven als character variabele ("True"/"False") terwijl deze
-# als boolean wordt opgeladen 
+# Om de één of andere reden wordt het veld "Transect" via de ICES download terug gegeven als character variabele 
+# ("True"/"False") terwijl deze als boolean wordt opgeladen 
 # -> ISSUE AANMAKEN!!
 
 
 #Create a cross-table with distance-corrected bird densities
 Create_Seabird_Density_Cross_Table <- function(esas_table, probabilities, species_selection)
 {
-  esas_table <- esas_table %>% filter(DistanceBins == "0|50|100|200|300", PlatformClass == 30)
+  esas_table <- esas_table %>% filter(DistanceBins == "0|50|100|200|300", 
+                                      PlatformClass == 30,
+                                      Area > 0)
   
   observations_select_fly <- esas_table %>%
     filter(SpeciesCode %in% species_selection,
@@ -194,14 +196,13 @@ Create_Seabird_Density_Cross_Table <- function(esas_table, probabilities, specie
   base_som <- as.data.frame(base_som)
   
   esas_densities_corr <- esas_table %>% 
-    distinct(PositionID, Date, Time, Area, Latitude, Longitude, SamplingMethod, TargetTaxa) 
+    distinct(PositionID, Date, Time, Area, Distance, TransectWidth, Latitude, Longitude, SamplingMethod, TargetTaxa) 
   
   round_number <- function(x) round(x, digits = 2)
-  calculate_density <- function(x) (x / esas_densities_corr$Area)
   
   esas_densities_corr <- left_join(esas_densities_corr, base_som) %>% 
     arrange(Date, Time) %>%
-    mutate_at(paste(species_selection), calculate_density) %>%
+    mutate_at(paste(species_selection), ~ . / Area) %>%
     mutate_at(paste(species_selection), round_number)
   
   return(esas_densities_corr)
