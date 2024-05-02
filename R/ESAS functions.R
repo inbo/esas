@@ -197,9 +197,11 @@ Create_Seabird_Density_Cross_Table <- function(esas_table, probabilities, specie
     distinct(PositionID, Date, Time, Area, Latitude, Longitude, SamplingMethod, TargetTaxa) 
   
   round_number <- function(x) round(x, digits = 2)
+  calculate_density <- function(x) (x / esas_densities_corr$Area)
   
   esas_densities_corr <- left_join(esas_densities_corr, base_som) %>% 
     arrange(Date, Time) %>%
+    mutate_at(paste(species_selection), calculate_density) %>%
     mutate_at(paste(species_selection), round_number)
   
   return(esas_densities_corr)
