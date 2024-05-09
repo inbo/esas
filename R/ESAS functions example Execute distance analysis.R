@@ -13,7 +13,7 @@ ESAS_TABLE <- Create_ESAS_Table(esas_tables_list = ESAS_TABLES_LIST)
 PROBABILITIES <- Calculate_Detection_P_Ship_Based_Surveys(esas_table_2_analyse = ESAS_TABLE,
                                                           species_2_analyse = c(720,6020))
 
-#check outcome of proababilities:
+#check outcome of probabilities:
 PROBABILITIES
 TEST <- read.csv("./Output/ESAS_probabilities.csv")
 TEST %>% filter(Species %in% c(720,6020))
