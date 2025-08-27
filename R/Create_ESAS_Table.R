@@ -17,11 +17,11 @@
 #'
 #' @examples
 Create_ESAS_Table <- function(esas_tables_list) {
-  esas_table <- left_join(
-    left_join(
-      left_join(
-        esas_tables_list$CAMPAIGNS %>% rename(CampaignNotes = Notes),
-        esas_tables_list$SAMPLES %>% rename(SampleNotes = Notes)
+  esas_table <- dplyr::left_join(
+    dplyr::left_join(
+      dplyr::left_join(
+        esas_tables_list$CAMPAIGNS %>% dplyr::rename(CampaignNotes = Notes),
+        esas_tables_list$SAMPLES %>% dplyr::rename(SampleNotes = Notes)
       ),
       esas_tables_list$POSITIONS
     ),
