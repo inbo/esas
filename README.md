@@ -5,7 +5,7 @@
 
 ## Goal
 
-This R package has the goal lowering the barrier to prepare data for upload to the ESAS database. 
+This R package has the goal of lowering the barrier to prepare data for upload to the ESAS database. 
 Additionally, it also provides functionality to read data from ESAS, 
 as well as some basic analysis functions.
 
