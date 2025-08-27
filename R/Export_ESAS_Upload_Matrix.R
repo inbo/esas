@@ -8,8 +8,6 @@
 #' @param path Directory path where the file will be saved.
 #' @param filename Character string specifying the name of the output file
 #'   without the extension.
-#' @param file_encoding Character string specifying the file encoding (default
-#'   is "UTF-8"). See [base::file()] for details on supported encodings.
 #'
 #' @return (invisible) The path to the exported file.
 #' @export
@@ -32,27 +30,23 @@
 #' #Export upload table:
 #' Export_ESAS_Upload_Matrix(table = ESAS_4_UPLOAD,
 #'                           path = "./Output/",
-#'                           export_name = "ESAS_4_upload",
-#'                           file_encoding = "UTF-8")
+#'                           export_name = "ESAS_4_upload")
 #'}
 Export_ESAS_Upload_Matrix <- function(table,
                                       path,
-                                      filename,
-                                      file_encoding = "UTF-8") {
+                                      filename) {
   # Export upload matrix
 
   # Create output path
   out_path <- paste(path, filename, ".csv", sep = "")
+
   # Write table to file
-  write.table(
-    x = table,
-    file = out_path,
-    sep = "\t",
-    row.names = F,
-    col.names = F,
-    quote = F,
-    fileEncoding = file_encoding
-  )
+  readr::write_delim(table,
+                     file = out_path,
+                     delim = "\t",
+                     col_names = FALSE,
+                     quote = "none")
+
   # Return path to file
   invisible(out_path)
 }

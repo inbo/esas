@@ -23,6 +23,7 @@ Imports:
     dplyr,
     magrittr,
     purrr,
+    readr,
     rlang,
     tidyr
 Suggests: 
