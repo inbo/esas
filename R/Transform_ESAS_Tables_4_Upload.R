@@ -50,19 +50,19 @@ Transform_ESAS_Tables_4_Upload <- function(campaigns_tbl,
                                            country) {
   campaigns_tbl <- campaigns_tbl %>%
     dplyr::mutate(RecordType = "EC") %>%
-    dplyr::relocate(RecordType)
+    dplyr::relocate(dplyr::all_of("RecordType"))
 
   samples_tbl <- samples_tbl %>%
     dplyr::mutate(RecordType = "ES") %>%
-    dplyr::relocate(RecordType)
+    dplyr::relocate(dplyr::all_of("RecordType"))
 
   positions_tbl <- positions_tbl %>%
     dplyr::mutate(RecordType = "EP") %>%
-    dplyr::relocate(RecordType)
+    dplyr::relocate(dplyr::all_of("RecordType"))
 
   observations_tbl <- observations_tbl %>%
     dplyr::mutate(RecordType = "EO") %>%
-    dplyr::relocate(RecordType)
+    dplyr::relocate(dplyr::all_of("RecordType"))
 
   file_information <- matrix(nrow = 1, ncol = 18)
   file_information[1, 1:3] <- c("FI", data_provider, country)
