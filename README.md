@@ -49,8 +49,17 @@ https://esas.ices.dk/webservices
 inbo/esas#1
 
 ### Read data from ESAS
-- read_esas()
-- 
+- `read_esas()` : empty stub function
+- `Read_ESAS_Tables()` : Read data & convert to ESAS 'mega-table', returns a list
 ### Prepare data for ESAS upload
+- `Transform_ESAS_Tables_4_Upload()` : creates binded data.frame for upload from 5 tables
+- `Export_ESAS_Upload_Matrix()` : creates tsv in expected format to upload from returned data.frame by `Transform_ESAS_Tables_4_Upload()`
+
 ### Analysis functions
-- 
+- `Create_ESAS_Table()` create combined table as input for analysis functions
+- `Calculate_Detection_P_Ship_Based_Surveys()`
+- `Create_Seabird_Density_Cross_Table()`
+
+## Example Scripts
+- `ESAS functions example Execute distance analysis.R`
+- `ESAS functions example Prepare for upload.R`
