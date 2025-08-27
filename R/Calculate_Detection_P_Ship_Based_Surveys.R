@@ -1,4 +1,27 @@
-#Execute distance analysis on ship-based survey results:
+#' Execute distance analysis on ship-based survey results
+#'
+#' This function calculates detection probabilities for specified species from
+#' ship-based survey data using distance sampling methods. It filters the input
+#' data for relevant observations, fits half-normal and hazard-rate models, and
+#' selects the best model based on AIC values. The output is a data frame
+#' containing species names, the selected model function, and the average
+#' detection probability.
+#'
+#' @param esas_table_2_analyse A data frame containing survey data with columns
+#'   for distance bins, platform class, transect type, observation distance,
+#'   species code, behavior, and count. As returned by [Create_ESAS_Table()].
+#' @param species_2_analyse A vector of species codes as encoded in the species
+#'   column of the Observations table in the ESAS Data Model. See the
+#'   [Species](https://esas-docs.ices.dk/species/) page of the Data Model.
+#'
+#' @return A data.frame with the following columns:
+#' - Species: The species code.
+#' - Function: The selected detection function ("HR" for hazard-rate or "HN" for half-normal).
+#' - Detection_P_AVG: The average detection probability for the species.
+#' @export
+#' @family analysis functions
+#'
+#' @examples
 Calculate_Detection_P_Ship_Based_Surveys <- function(esas_table_2_analyse, species_2_analyse)
 {
   DISTANCE <- esas_table_2_analyse %>%
