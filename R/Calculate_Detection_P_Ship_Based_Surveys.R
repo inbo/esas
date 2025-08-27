@@ -22,7 +22,8 @@
 #' @family analysis functions
 #'
 #' @examples
-Calculate_Detection_P_Ship_Based_Surveys <- function(esas_table_2_analyse, species_2_analyse) {
+Calculate_Detection_P_Ship_Based_Surveys <- function(esas_table_2_analyse,
+                                                     species_2_analyse) {
   DISTANCE <- esas_table_2_analyse %>%
     filter(
       DistanceBins %in% c("0|50|100|200|300"),
@@ -45,8 +46,7 @@ Calculate_Detection_P_Ship_Based_Surveys <- function(esas_table_2_analyse, speci
   distance_model_list_HR <- vector("list", length(species_2_analyse))
   distance_model_list_HN <- vector("list", length(species_2_analyse))
 
-  for (i in c(1:length(species_2_analyse)))
-  {
+  for (i in c(1:length(species_2_analyse))) {
     Species2model <- species_2_analyse[i]
 
     distance_model_list_HR[[i]] <-
@@ -80,8 +80,7 @@ Calculate_Detection_P_Ship_Based_Surveys <- function(esas_table_2_analyse, speci
   )
   probabilities$Species <- species_2_analyse
 
-  for (i in c(1:length(species_2_analyse)))
-  {
+  for (i in c(1:length(species_2_analyse))) {
     probabilities[i, 2] <- summary(distance_model_list_HR[[i]])$ds$average.p
     probabilities[i, 3] <- summary(distance_model_list_HR[[i]])$ds$aic
 
