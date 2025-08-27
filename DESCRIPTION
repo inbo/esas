@@ -1,9 +1,16 @@
 Package: esas
 Title: Read and Process ESAS Data
-Version: 0.0.0.9000
-Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
+Version: 0.0.1.9000
+Authors@R: c(
+    person("Pieter", "Huybrechts", , "pieter.huybrechts@inbo.be", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0002-6658-6062")),
+    person("Peter", "Desmet", , "peter.desmet@inbo.be", role = "aut",
+           comment = c(ORCID = "0000-0002-8442-8025")),
+    person("Nicolas", "Vanermen", ,"nicolas.vanermen@inbo.be", role = "aut",
+           comment = c(ORCID = "0000-0003-0156-357X")),
+    person("Research Institute for Nature and Forest (INBO)", role = "cph",
+           comment = c(ROR = "00j54wy13"))
+           )
 Description: Read and process data from the European Seabirds at Sea
     Database.
 License: MIT + file LICENSE
