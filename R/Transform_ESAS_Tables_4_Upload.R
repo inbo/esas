@@ -20,8 +20,10 @@
 #' @param country (character) ISO_3166 country code of the data provider. For
 #'   example: "BE".
 #'
-#' @return
+#' @return (data.frame) with 18 columns and a number of rows equal to the sum of
+#'  rows of the input tables plus one (for the file information row).
 #' @export
+#' @family upload functions
 #'
 #' @examples
 #' \dontrun{
