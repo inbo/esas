@@ -16,6 +16,7 @@
 #' @family upload functions
 #'
 #' @examples
+#' \dontrun{
 #' #Read 4 ESAS tables:
 #' ESAS_TABLES_LIST <- Read_ESAS_Tables(path = "./Data/",
 #'                                      file_encoding = "UTF-8")
@@ -33,6 +34,7 @@
 #'                           path = "./Output/",
 #'                           export_name = "ESAS_4_upload",
 #'                           file_encoding = "UTF-8")
+#'}
 Export_ESAS_Upload_Matrix <- function(table,
                                       path,
                                       filename,

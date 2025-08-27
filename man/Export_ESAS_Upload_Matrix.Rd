@@ -26,6 +26,7 @@ This function exports a data frame to a tab-delimited file without row names,
 column names, or quotes, using the specified file encoding.
 }
 \examples{
+\dontrun{
 #Read 4 ESAS tables:
 ESAS_TABLES_LIST <- Read_ESAS_Tables(path = "./Data/",
                                      file_encoding = "UTF-8")
@@ -43,6 +44,7 @@ Export_ESAS_Upload_Matrix(table = ESAS_4_UPLOAD,
                           path = "./Output/",
                           export_name = "ESAS_4_upload",
                           file_encoding = "UTF-8")
+}
 }
 \seealso{
 Other upload functions: 
