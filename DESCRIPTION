@@ -25,7 +25,8 @@ Imports:
     purrr,
     readr,
     rlang,
-    tidyr
+    tidyr,
+    utils
 Suggests: 
     Distance,
     knitr,
