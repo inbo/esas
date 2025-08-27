@@ -19,6 +19,7 @@
 #'   selected species.
 #' @export
 #' @family analysis functions
+#' @importFrom dplyr .data
 #'
 #' @examples
 #' \dontrun{
@@ -34,70 +35,71 @@ Create_Seabird_Density_Cross_Table <- function(esas_table,
                                                probabilities,
                                                species_selection) {
   esas_table <- esas_table %>% dplyr::filter(
-    DistanceBins %in% c("0|50|100|200|300"),
-    PlatformClass %in% c(30),
-    Area > 0
+    .data$DistanceBins %in% c("0|50|100|200|300"),
+    .data$PlatformClass %in% c(30),
+    .data$Area > 0
   )
 
   observations_select_fly <- esas_table %>%
     dplyr::filter(
-      SpeciesCode %in% species_selection,
-      ObservationDistance %in% c("F"),
-      Transect %in% c("True"),
-      !Behaviour %in% c(99)
+      .data$SpeciesCode %in% species_selection,
+      .data$ObservationDistance %in% c("F"),
+      .data$Transect %in% c("True"),
+      !.data$Behaviour %in% c(99)
     )
 
   observations_select_swim <- esas_table %>%
     dplyr::filter(
-      SpeciesCode %in% species_selection,
-      ObservationDistance %in% c("A", "B", "C", "D"),
-      Transect %in% c("True"),
-      !Behaviour %in% c(99)
+      .data$SpeciesCode %in% species_selection,
+      .data$ObservationDistance %in% c("A", "B", "C", "D"),
+      .data$Transect %in% c("True"),
+      !.data$Behaviour %in% c(99)
     )
 
   probabilities <- probabilities %>%
-    dplyr::rename(SpeciesCode = Species) %>%
-    dplyr::select(SpeciesCode, Detection_P_AVG)
+    dplyr::rename(SpeciesCode = dplyr::all_of("Species")) %>%
+    dplyr::select(dplyr::all_of(c("SpeciesCode", "Detection_P_AVG")))
 
   observations_select_swim <-
     dplyr::left_join(observations_select_swim, probabilities) %>%
-    dplyr::mutate(Count = Count / Detection_P_AVG)
+    dplyr::mutate(Count = .data$Count / .data$Detection_P_AVG)
 
   observations_select <- rbind(
     observations_select_fly,
-    observations_select_swim %>% dplyr::select(!Detection_P_AVG)
+    observations_select_swim %>%
+      dplyr::select(-dplyr::any_of("Detection_P_AVG"))
   )
 
   base <- esas_table %>%
-    tidyr::expand(PositionID, species_selection) %>%
-    dplyr::rename(SpeciesCode = species_selection)
+    tidyr::expand(.data$PositionID, .data$species_selection) %>%
+    dplyr::rename(SpeciesCode = dplyr::all_of("species_selection"))
 
   som <- observations_select %>%
-    dplyr::group_by(PositionID, SpeciesCode) %>%
-    dplyr::summarise(Count = sum(Count))
+    dplyr::group_by(.data$PositionID, .data$SpeciesCode) %>%
+    dplyr::summarise(Count = sum(.data$Count))
 
   base_som <- dplyr::left_join(base, som) %>%
-    tidyr::spread(SpeciesCode, Count, fill = 0) %>%
-    dplyr::arrange(PositionID)
+    tidyr::spread(dplyr::all_of(c("SpeciesCode", "Count")), fill = 0) %>%
+    dplyr::arrange(.data$PositionID)
 
   base_som <- as.data.frame(base_som)
 
   esas_densities_corr <- esas_table %>%
     dplyr::distinct(
-      PositionID,
-      Date,
-      Time,
-      Area,
-      Distance,
-      TransectWidth,
-      Latitude,
-      Longitude,
-      SamplingMethod,
-      TargetTaxa
+      .data$PositionID,
+      .data$Date,
+      .data$Time,
+      .data$Area,
+      .data$Distance,
+      .data$TransectWidth,
+      .data$Latitude,
+      .data$Longitude,
+      .data$SamplingMethod,
+      .data$TargetTaxa
     )
 
   esas_densities_corr <- dplyr::left_join(esas_densities_corr, base_som) %>%
-    dplyr::arrange(Date, Time) %>%
+    dplyr::arrange(.data$Date, .data$Time) %>%
     dplyr::mutate_at(paste(species_selection), ~ . / Area) %>%
     dplyr::mutate_at(paste(species_selection), round_number)
 

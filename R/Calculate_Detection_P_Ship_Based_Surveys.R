@@ -20,6 +20,7 @@
 #' - Detection_P_AVG: The average detection probability for the species.
 #' @export
 #' @family analysis functions
+#' @importFrom dplyr .data
 #'
 #' @examples
 #' \dontrun{
@@ -46,22 +47,24 @@ Calculate_Detection_P_Ship_Based_Surveys <- function(esas_table_2_analyse,
 
   DISTANCE <- esas_table_2_analyse %>%
     dplyr::filter(
-      DistanceBins %in% c("0|50|100|200|300"),
-      PlatformClass %in% c(30),
-      Transect %in% c("True"),
-      ObservationDistance %in% c("A", "B", "C", "D"),
-      SpeciesCode %in% species_2_analyse,
-      !Behaviour %in% c("99")
+      .data$DistanceBins %in% c("0|50|100|200|300"),
+      .data$PlatformClass %in% c(30),
+      .data$Transect %in% c("True"),
+      .data$ObservationDistance %in% c("A", "B", "C", "D"),
+      .data$SpeciesCode %in% species_2_analyse,
+      !.data$Behaviour %in% c("99")
     ) %>%
     dplyr::mutate(distance = dplyr::recode(
-      ObservationDistance,
+      .data$ObservationDistance,
       "A" = 0.025,
       "B" = 0.075,
       "C" = 0.150,
       "D" = 0.250
     )) %>%
-    dplyr::rename(Size = Count) %>%
-    dplyr::select(PositionID, SpeciesCode, Size, distance)
+    dplyr::rename(Size = dplyr::all_of("Count")) %>%
+    dplyr::select(
+      dplyr::all_of(c("PositionID", "SpeciesCode", "Size", "distance"))
+    )
 
   distance_model_list_HR <- vector("list", length(species_2_analyse))
   distance_model_list_HN <- vector("list", length(species_2_analyse))
@@ -71,7 +74,7 @@ Calculate_Detection_P_Ship_Based_Surveys <- function(esas_table_2_analyse,
 
     distance_model_list_HR[[i]] <-
       Distance::ds(
-        DISTANCE %>% dplyr::filter(SpeciesCode == Species2model),
+        DISTANCE %>% dplyr::filter(.data$SpeciesCode == Species2model),
         cutpoints = c(0, .05, .1, .2, .3),
         truncation = 0.3,
         key = "hr",
@@ -81,7 +84,7 @@ Calculate_Detection_P_Ship_Based_Surveys <- function(esas_table_2_analyse,
 
     distance_model_list_HN[[i]] <-
       Distance::ds(
-        DISTANCE %>% dplyr::filter(SpeciesCode == Species2model),
+        DISTANCE %>% dplyr::filter(.data$SpeciesCode == Species2model),
         cutpoints = c(0, .05, .1, .2, .3),
         truncation = 0.3,
         key = "hn",
@@ -115,14 +118,18 @@ Calculate_Detection_P_Ship_Based_Surveys <- function(esas_table_2_analyse,
 
   probabilities <- probabilities %>%
     dplyr::mutate(
-      Function = dplyr::if_else(Detection_HR_AIC < Detection_HN_AIC, "HR", "HN"),
+      Function = dplyr::if_else(.data$Detection_HR_AIC < .data$Detection_HN_AIC,
+                                "HR",
+                                "HN"),
       Detection_P_AVG = dplyr::if_else(
-        Detection_HR_AIC < Detection_HN_AIC,
-        Detection_HR_P_AVG,
-        Detection_HN_P_AVG
+        .data$Detection_HR_AIC < .data$Detection_HN_AIC,
+        .data$Detection_HR_P_AVG,
+        .data$Detection_HN_P_AVG
       )
     ) %>%
     dplyr::mutate_at(c("Detection_P_AVG"), round_prob)
 
-  return(probabilities %>% dplyr::select(Species, Function, Detection_P_AVG))
+  # Select columns and return probabilities
+  probabilities %>%
+    dplyr::select(dplyr::all_of(c("Species", "Function", "Detection_P_AVG")))
 }
