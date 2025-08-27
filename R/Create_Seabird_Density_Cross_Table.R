@@ -69,7 +69,7 @@ Create_Seabird_Density_Cross_Table <- function(esas_table,
   )
 
   base <- esas_table %>%
-    expand(PositionID, species_selection) %>%
+    tidyr::expand(PositionID, species_selection) %>%
     dplyr::rename(SpeciesCode = species_selection)
 
   som <- observations_select %>%
@@ -77,7 +77,7 @@ Create_Seabird_Density_Cross_Table <- function(esas_table,
     dplyr::summarise(Count = sum(Count))
 
   base_som <- left_join(base, som) %>%
-    dplyr::spread(SpeciesCode, Count, fill = 0) %>%
+    tidyr::spread(SpeciesCode, Count, fill = 0) %>%
     dplyr::arrange(PositionID)
 
   base_som <- as.data.frame(base_som)
