@@ -106,14 +106,14 @@ Calculate_Detection_P_Ship_Based_Surveys <- function(esas_table_2_analyse,
 
   for (i in c(1:length(species_2_analyse))) {
     probabilities[i, 2] <-
-      Distance::summary(distance_model_list_HR[[i]])$ds$average.p
+      summary(distance_model_list_HR[[i]])$ds$average.p
     probabilities[i, 3] <-
-      Distance::summary(distance_model_list_HR[[i]])$ds$aic
+      summary(distance_model_list_HR[[i]])$ds$aic
 
     probabilities[i, 4] <-
-      Distance::summary(distance_model_list_HN[[i]])$ds$average.p
+      summary(distance_model_list_HN[[i]])$ds$average.p
     probabilities[i, 5] <-
-      Distance::summary(distance_model_list_HN[[i]])$ds$aic
+      summary(distance_model_list_HN[[i]])$ds$aic
   }
 
   probabilities <- probabilities %>%
