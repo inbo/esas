@@ -87,10 +87,6 @@ Create_Seabird_Density_Cross_Table <- function(esas_table,
       TargetTaxa
     )
 
-  round_number <- function(x) {
-    round(x, digits = 2)
-  }
-
   esas_densities_corr <- dplyr::left_join(esas_densities_corr, base_som) %>%
     dplyr::arrange(Date, Time) %>%
     dplyr::mutate_at(paste(species_selection), ~ . / Area) %>%

@@ -89,10 +89,6 @@ Calculate_Detection_P_Ship_Based_Surveys <- function(esas_table_2_analyse, speci
     probabilities[i, 5] <- summary(distance_model_list_HN[[i]])$ds$aic
   }
 
-  round_prob <- function(x) {
-    round(x, digits = 2)
-  }
-
   probabilities <- probabilities %>%
     mutate(
       Function = if_else(Detection_HR_AIC < Detection_HN_AIC, "HR", "HN"),
