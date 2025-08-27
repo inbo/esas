@@ -1,4 +1,24 @@
-#Create a cross-table with distance-corrected bird densities
+#' Create a cross-table with distance-corrected bird densities
+#'
+#' This function processes seabird observation data to create a cross-table of
+#' distance-corrected bird densities for selected species. It filters the data
+#' based on specific criteria, applies detection probability corrections, and
+#' calculates densities per unit area. The resulting table includes relevant
+#' metadata such as date, time, area, and location.
+#'
+#' @param esas_table A data frame containing seabird observation data as
+#'   resulting from the [Create_ESAS_Table()] function.
+#' @param probabilities A data frame containing detection probabilities for
+#'   different species as returned by [Calculate_Detection_P_Ship_Based_Surveys()]
+#' @param species_selection A vector of species codes to include in the
+#'   analysis as encoded in the species column of the Observations table in the ESAS Data Model. See
+#'   the [Species](https://esas-docs.ices.dk/species/) page of the Data Model.
+#' @return A data frame containing distance-corrected bird densities for the
+#'   selected species.
+#' @export
+#' @family analysis functions
+#'
+#' @examples
 Create_Seabird_Density_Cross_Table <- function(esas_table, probabilities, species_selection)
 {
   esas_table <- esas_table %>% filter(DistanceBins %in% c("0|50|100|200|300"),
