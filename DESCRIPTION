@@ -1,5 +1,5 @@
 Package: esas
-Title: Read and Process ESAS Data
+Title: Read and Process Data from European Seabirds At Sea
 Version: 0.0.1.9000
 Authors@R: c(
     person("Pieter", "Huybrechts", , "pieter.huybrechts@inbo.be", role = c("aut", "cre"),
