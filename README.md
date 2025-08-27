@@ -43,7 +43,9 @@ Some fields allow multiple values, these are combined with `~`. Most tables have
 
 ## ICES API
 
-https://esas.ices.dk/webservices
+link: https://esas.ices.dk/webservices
+
+There was a comment in inbo/esas#2 that the API was quite slow.
 
 ## Functions
 inbo/esas#1
