@@ -1,14 +1,30 @@
 Package: esas
-Title: Read and Process ESAS Data
+Title: Read and Process Data from European Seabirds At Sea
 Version: 0.0.0.9000
-Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: Read and process data from the European Seabirds at Sea Database.
+Authors@R: c(
+    person("Pieter", "Huybrechts", , "pieter.huybrechts@inbo.be", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0002-6658-6062", affiliation = "Research Institute for Nature and Forest (INBO)")),
+    person("Nicolas", "Vanermen", , "nicolas.vanermen@inbo.be", role = "aut",
+           comment = c(ORCID = "0000-0003-0156-357X", affiliation = "Research Institute for Nature and Forest (INBO)")),
+    person("Robin", "Daelemans", , "robin.daelemans@inbo.be", role = "ctb",
+           comment = c(ORCID = "0000-0003-0887-3140", affiliation = "Research Institute for Nature and Forest (INBO)")),
+    person("Peter", "Desmet", , "peter.desmet@inbo.be", role = "ctb",
+           comment = c(ORCID = "0000-0002-8442-8025", affiliation = "Research Institute for Nature and Forest (INBO)")),
+    person("Research Institute for Nature and Forest (INBO)", role = "cph",
+           comment = c(ROR = "00j54wy13")),
+    person("European Union", role = "fnd",
+           comment = "https://doi.org/10.3030/101112823")
+  )
+Description: Read and process data from European Seabirds At Sea ('ESAS').
 License: MIT + file LICENSE
+URL: https://github.com/inbo/esas, https://inbo.github.io/esas
+BugReports: https://github.com/inbo/esas/issues
+Suggests:
+    testthat (>= 3.0.0)
+VignetteBuilder: 
+    knitr
+Config/testthat/edition: 3
 Encoding: UTF-8
+LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
-Suggests: 
-    testthat (>= 3.0.0)
-Config/testthat/edition: 3
