@@ -57,15 +57,15 @@ Create_Seabird_Density_Cross_Table <- function(esas_table,
 
   probabilities <- probabilities %>%
     dplyr::rename(SpeciesCode = Species) %>%
-    select(SpeciesCode, Detection_P_AVG)
+    dplyr::select(SpeciesCode, Detection_P_AVG)
 
   observations_select_swim <-
-    left_join(observations_select_swim, probabilities) %>%
+    dplyr::left_join(observations_select_swim, probabilities) %>%
     dplyr::mutate(Count = Count / Detection_P_AVG)
 
   observations_select <- rbind(
     observations_select_fly,
-    observations_select_swim %>% select(!Detection_P_AVG)
+    observations_select_swim %>% dplyr::select(!Detection_P_AVG)
   )
 
   base <- esas_table %>%
@@ -76,7 +76,7 @@ Create_Seabird_Density_Cross_Table <- function(esas_table,
     dplyr::group_by(PositionID, SpeciesCode) %>%
     dplyr::summarise(Count = sum(Count))
 
-  base_som <- left_join(base, som) %>%
+  base_som <- dplyr::left_join(base, som) %>%
     tidyr::spread(SpeciesCode, Count, fill = 0) %>%
     dplyr::arrange(PositionID)
 

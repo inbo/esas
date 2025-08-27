@@ -53,7 +53,7 @@ Calculate_Detection_P_Ship_Based_Surveys <- function(esas_table_2_analyse,
       SpeciesCode %in% species_2_analyse,
       !Behaviour %in% c("99")
     ) %>%
-    dplyr::mutate(distance = recode(
+    dplyr::mutate(distance = dplyr::recode(
       ObservationDistance,
       "A" = 0.025,
       "B" = 0.075,
@@ -115,8 +115,8 @@ Calculate_Detection_P_Ship_Based_Surveys <- function(esas_table_2_analyse,
 
   probabilities <- probabilities %>%
     dplyr::mutate(
-      Function = if_else(Detection_HR_AIC < Detection_HN_AIC, "HR", "HN"),
-      Detection_P_AVG = if_else(
+      Function = dplyr::if_else(Detection_HR_AIC < Detection_HN_AIC, "HR", "HN"),
+      Detection_P_AVG = dplyr::if_else(
         Detection_HR_AIC < Detection_HN_AIC,
         Detection_HR_P_AVG,
         Detection_HN_P_AVG
