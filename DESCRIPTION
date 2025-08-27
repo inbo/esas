@@ -13,7 +13,7 @@ Authors@R: c(
     person("Research Institute for Nature and Forest (INBO)", role = "cph",
            comment = c(ROR = "00j54wy13"))
            )
-Description: Read and process data from European Seabirds At Sea.
+Description: Read and process data from European Seabirds At Sea ('ESAS').
 License: MIT + file LICENSE
 Suggests: 
     testthat (>= 3.0.0)
