@@ -4,7 +4,7 @@
 \alias{Export_ESAS_Upload_Matrix}
 \title{Write a tab delimited csv file as expected by the ESAS upload module.}
 \usage{
-Export_ESAS_Upload_Matrix(table, path, filename, file_encoding = "UTF-8")
+Export_ESAS_Upload_Matrix(table, path, filename)
 }
 \arguments{
 \item{table}{A data frame or matrix to be exported as returned by
@@ -14,9 +14,6 @@ Export_ESAS_Upload_Matrix(table, path, filename, file_encoding = "UTF-8")
 
 \item{filename}{Character string specifying the name of the output file
 without the extension.}
-
-\item{file_encoding}{Character string specifying the file encoding (default
-is "UTF-8"). See \code{\link[base:connections]{base::file()}} for details on supported encodings.}
 }
 \value{
 (invisible) The path to the exported file.
@@ -42,8 +39,7 @@ ESAS_4_UPLOAD <- Transform_ESAS_Tables_4_Upload(campaigns_tbl = ESAS_TABLES_LIST
 #Export upload table:
 Export_ESAS_Upload_Matrix(table = ESAS_4_UPLOAD,
                           path = "./Output/",
-                          export_name = "ESAS_4_upload",
-                          file_encoding = "UTF-8")
+                          export_name = "ESAS_4_upload")
 }
 }
 \seealso{
