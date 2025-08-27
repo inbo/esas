@@ -16,6 +16,23 @@
 #' @family upload functions
 #'
 #' @examples
+#' #Read 4 ESAS tables:
+#' ESAS_TABLES_LIST <- Read_ESAS_Tables(path = "./Data/",
+#'                                      file_encoding = "UTF-8")
+#'
+#' #Convert tables to upload format:
+#' ESAS_4_UPLOAD <- Transform_ESAS_Tables_4_Upload(campaigns_tbl = ESAS_TABLES_LIST$CAMPAIGNS,
+#'                                                 samples_tbl = ESAS_TABLES_LIST$SAMPLES,
+#'                                                 positions_tbl = ESAS_TABLES_LIST$POSITIONS,
+#'                                                 observations_tbl = ESAS_TABLES_LIST$OBSERVATIONS,
+#'                                                 data_provider = "202",
+#'                                                 country = "BE")
+#'
+#' #Export upload table:
+#' Export_ESAS_Upload_Matrix(table = ESAS_4_UPLOAD,
+#'                           path = "./Output/",
+#'                           export_name = "ESAS_4_upload",
+#'                           file_encoding = "UTF-8")
 Export_ESAS_Upload_Matrix <- function(table,
                                       path,
                                       filename,

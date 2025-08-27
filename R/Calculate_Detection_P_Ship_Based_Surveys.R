@@ -22,6 +22,23 @@
 #' @family analysis functions
 #'
 #' @examples
+#' \dontrun{
+#' # Read 4 ESAS tables:
+#' ESAS_TABLES_LIST <- Read_ESAS_Tables(
+#'   path = "./Data/ESAS download 2024 04 30",
+#'   file_encoding = "UTF-8"
+#' )
+#'
+#' # Create an ESAS master-table:
+#' ESAS_TABLE <- Create_ESAS_Table(esas_tables_list = ESAS_TABLES_LIST)
+#'
+#'
+#' # Execute distance analysis on selection of species:
+#' PROBABILITIES <- Calculate_Detection_P_Ship_Based_Surveys(
+#'   esas_table_2_analyse = ESAS_TABLE,
+#'   species_2_analyse = c(720, 6020)
+#' )
+#' }
 Calculate_Detection_P_Ship_Based_Surveys <- function(esas_table_2_analyse,
                                                      species_2_analyse) {
   # The Distance package is required to use this function

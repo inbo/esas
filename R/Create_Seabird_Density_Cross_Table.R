@@ -21,6 +21,15 @@
 #' @family analysis functions
 #'
 #' @examples
+#' \dontrun{
+#'
+#' esas_table <- Create_ESAS_Table(Read_ESAS_Tables(path = "path_to_download"))
+#' ESAS_DENSITIES <- Create_Seabird_Density_Cross_Table(
+#'   esas_table = esas_table,
+#'   probabilities = Calculate_Detection_P_Ship_Based_Surveys(esas_table),
+#'   species_selection = c(720, 6020)
+#' )
+#' }
 Create_Seabird_Density_Cross_Table <- function(esas_table,
                                                probabilities,
                                                species_selection) {

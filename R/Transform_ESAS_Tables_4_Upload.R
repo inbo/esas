@@ -29,7 +29,7 @@
 #' \dontrun{
 #' ESAS_TABLES_LIST <-
 #'   Read_ESAS_Tables(
-#'     pathway = "local_folder_with_downloaded_files",
+#'     path = "local_folder_with_downloaded_files",
 #'     file_encoding = "UTF-8"
 #'   )
 #'
