@@ -9,11 +9,14 @@ This R package has the goal lowering the barrier to prepare data for upload to t
 Additionally, it also provides functionality to read data from ESAS, 
 as well as some basic analysis functions.
 
+The package starts at 5 tables as described by the ICES Data Model. And works towards a single table, as expected by the [ESAS Data Portal](https://www.ices.dk/data/data-portals/Pages/European-Seabirds-at-sea.aspx).
 
 ICES: International Council for the Exploration of the Sea hosts the ESAS
 database (European Seabirds at Sea).
 
 Inventory of the available data: https://esas.ices.dk/inventory
+
+Uploading to ESAS happens as a single large csv file ('mega table'), that consists of the 5 tables from the ICES Data Model combined.
 
 ## ICES Data Model
 
