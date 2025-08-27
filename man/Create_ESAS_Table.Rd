@@ -23,6 +23,18 @@ CAMPAIGNS, SAMPLES, POSITIONS, and OBSERVATIONS tables are included. It also
 renames the Notes columns from the CAMPAIGNS and SAMPLES tables to avoid
 naming conflicts.
 }
+\examples{
+\dontrun{
+# Read 4 ESAS tables:
+ESAS_TABLES_LIST <- Read_ESAS_Tables(
+  path = "./Data/ESAS download 2024 04 30",
+  file_encoding = "UTF-8"
+)
+
+# Create an ESAS master-table:
+ESAS_TABLE <- Create_ESAS_Table(esas_tables_list = ESAS_TABLES_LIST)
+}
+}
 \seealso{
 Other analysis functions: 
 \code{\link{Calculate_Detection_P_Ship_Based_Surveys}()},
