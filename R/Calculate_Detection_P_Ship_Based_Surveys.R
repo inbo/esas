@@ -127,7 +127,7 @@ Calculate_Detection_P_Ship_Based_Surveys <- function(esas_table_2_analyse,
         .data$Detection_HN_P_AVG
       )
     ) %>%
-    dplyr::mutate_at(c("Detection_P_AVG"), round_prob)
+    dplyr::mutate_at(c("Detection_P_AVG"), ~ round(.x, digits = 2))
 
   # Select columns and return probabilities
   probabilities %>%
