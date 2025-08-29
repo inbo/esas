@@ -74,7 +74,7 @@ Create_Seabird_Density_Cross_Table <- function(esas_table,
   )
 
   base <- esas_table %>%
-    tidyr::expand(.data$PositionID, .data$species_selection) %>%
+    tidyr::expand(.data$PositionID, species_selection) %>%
     dplyr::rename(SpeciesCode = dplyr::all_of("species_selection"))
 
   som <- observations_select %>%
