@@ -23,23 +23,24 @@ This function exports a data frame to a tab-delimited file without row names,
 column names, or quotes, using the specified file encoding.
 }
 \examples{
-\dontrun{
 #Read 4 ESAS tables:
-ESAS_TABLES_LIST <- Read_ESAS_Tables(path = "./Data/",
+data_path <- system.file("extdata", "ESAS_INBO_202401", package = "esas")
+esas_tables_list <- Read_ESAS_Tables(path = data_path,
                                      file_encoding = "UTF-8")
 
 #Convert tables to upload format:
-ESAS_4_UPLOAD <- Transform_ESAS_Tables_4_Upload(campaigns_tbl = ESAS_TABLES_LIST$CAMPAIGNS,
-                                                samples_tbl = ESAS_TABLES_LIST$SAMPLES,
-                                                positions_tbl = ESAS_TABLES_LIST$POSITIONS,
-                                                observations_tbl = ESAS_TABLES_LIST$OBSERVATIONS,
+esas_4_upload <- Transform_ESAS_Tables_4_Upload(campaigns_tbl = esas_tables_list$CAMPAIGNS,
+                                                samples_tbl = esas_tables_list$SAMPLES,
+                                                positions_tbl = esas_tables_list$POSITIONS,
+                                                observations_tbl = esas_tables_list$OBSERVATIONS,
                                                 data_provider = "202",
                                                 country = "BE")
 
+\dontrun{
 #Export upload table:
-Export_ESAS_Upload_Matrix(table = ESAS_4_UPLOAD,
-                          path = "./Output/",
-                          export_name = "ESAS_4_upload")
+Export_ESAS_Upload_Matrix(table = esas_4_upload,
+                          path = tempdir(),
+                          filename = "esas_4_upload")
 }
 }
 \seealso{
