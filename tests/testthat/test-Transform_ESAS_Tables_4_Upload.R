@@ -1,6 +1,6 @@
 test_that("Transform_ESAS_Tables_4_Upload() returns data.frame", {
   # Read some ESAS data to transform
-  data_path <- system.file("extdata", "ESAS_0827343782", package = "esas")
+  data_path <- system.file("extdata", "ESAS_INBO_202401", package = "esas")
   esas_tables <- Read_ESAS_Tables(data_path)
 
   # Transform the tables to single data.frame
@@ -19,7 +19,7 @@ test_that("Transform_ESAS_Tables_4_Upload() returns data.frame", {
 
 test_that("Transform_ESAS_Tables_4_Upload() returns correct columns", {
   # Read some ESAS data to transform
-  data_path <- system.file("extdata", "ESAS_0827343782", package = "esas")
+  data_path <- system.file("extdata", "ESAS_INBO_202401", package = "esas")
   esas_tables <- Read_ESAS_Tables(data_path)
 
   # Transform the tables to single data.frame
@@ -98,7 +98,7 @@ test_that("Transform_ESAS_Tables_4_Upload() returns expected number of rows", {
   # Number of rows returned should be sum of rows of input tables + 1 for file
   # information
   # Read some ESAS data to transform
-  data_path <- system.file("extdata", "ESAS_0827343782", package = "esas")
+  data_path <- system.file("extdata", "ESAS_INBO_202401", package = "esas")
   esas_tables <- Read_ESAS_Tables(data_path)
 
   # Transform the tables to single data.frame
@@ -114,7 +114,7 @@ test_that("Transform_ESAS_Tables_4_Upload() returns expected number of rows", {
 
   expect_identical(
     nrow(transformed_esas_tables),
-    sum(purrr::map_int(esas_tables, nrow)) + 1 # file information row
+    sum(purrr::map_int(esas_tables, nrow), 1) # file information row
   )
 })
 
