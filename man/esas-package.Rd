@@ -13,6 +13,7 @@ Useful links:
 \itemize{
   \item \url{https://github.com/inbo/esas}
   \item \url{https://inbo.github.io/esas}
+  \item \url{https://inbo.github.io/esas/}
   \item Report bugs at \url{https://github.com/inbo/esas/issues}
 }
 

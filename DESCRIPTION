@@ -17,7 +17,7 @@ Authors@R: c(
   )
 Description: Read and process data from European Seabirds At Sea ('ESAS').
 License: MIT + file LICENSE
-URL: https://github.com/inbo/esas, https://inbo.github.io/esas
+URL: https://github.com/inbo/esas, https://inbo.github.io/esas, https://inbo.github.io/esas/
 BugReports: https://github.com/inbo/esas/issues
 Depends: 
     R (>= 4.1.0)
