@@ -30,7 +30,7 @@
 #' #Export upload table:
 #' Export_ESAS_Upload_Matrix(table = ESAS_4_UPLOAD,
 #'                           path = "./Output/",
-#'                           export_name = "ESAS_4_upload")
+#'                           filename = "ESAS_4_upload")
 #'}
 Export_ESAS_Upload_Matrix <- function(table,
                                       path,

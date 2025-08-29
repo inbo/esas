@@ -39,7 +39,7 @@ ESAS_4_UPLOAD <- Transform_ESAS_Tables_4_Upload(campaigns_tbl = ESAS_TABLES_LIST
 #Export upload table:
 Export_ESAS_Upload_Matrix(table = ESAS_4_UPLOAD,
                           path = "./Output/",
-                          export_name = "ESAS_4_upload")
+                          filename = "ESAS_4_upload")
 }
 }
 \seealso{
