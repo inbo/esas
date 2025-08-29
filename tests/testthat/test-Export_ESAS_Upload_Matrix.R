@@ -24,7 +24,7 @@ test_that("Export_ESAS_Upload_Matrix() writes a tab delimited file", {
   first_lines <- readr::read_lines(exported_filepath, n_max = 3)
 
   # The delimiter should be present on every line.
-  purrr::map_lgl(first_lines, ~ grep("\t", .x)) |>
+  purrr::map_lgl(first_lines, ~ grepl("\t", .x)) |>
     purrr::walk(expect_true)
 })
 
