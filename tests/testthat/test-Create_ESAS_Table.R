@@ -1,9 +1,14 @@
 test_that("Create_ESAS_Table() returns data.frame with expected columns", {
   # QUESTION: Should all these columns always be present?
-  expect_s3_class(Create_ESAS_Table(), "data.frame")
+
+  # Read ESAS data from file
+  data_path <- system.file("extdata", "ESAS_0827343782", package = "esas")
+  esas_tables <- Read_ESAS_Tables(data_path)
+
+  expect_s3_class(Create_ESAS_Table(esas_tables), "data.frame")
 
   expect_named(
-    Create_ESAS_Table(),
+    Create_ESAS_Table(esas_tables),
     c(
       "DataRightsHolder",
       "Country",
@@ -59,7 +64,7 @@ test_that("Create_ESAS_Table() returns data.frame with expected columns", {
       "Prey",
       "Association",
       "Behaviour",
-      "Notes"
+      "ObservationNotes"
     )
   )
 })
@@ -69,10 +74,10 @@ test_that("Create_ESAS_Table() returns sum of rows of tables", {
 })
 
 test_that("Create_ESAS_Table() returns correct column types", {
-  table_list <-
+  esas_tables <-
     Read_ESAS_Tables(system.file("extdata", "ESAS_0827343782", package = "esas"))
   expect_identical(
-    purrr::map(Create_ESAS_Table(table_list), class),
+    purrr::map(Create_ESAS_Table(esas_tables), class),
     list(
       DataRightsHolder = "integer",
       Country = "character",
@@ -128,7 +133,7 @@ test_that("Create_ESAS_Table() returns correct column types", {
       Prey = "integer",
       Association = "character",
       Behaviour = "integer",
-      Notes = "character"
+      ObservationNotes = "character"
     )
   )
 })
