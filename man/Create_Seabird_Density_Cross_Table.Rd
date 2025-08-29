@@ -35,15 +35,16 @@ calculates densities per unit area. The resulting table includes relevant
 metadata such as date, time, area, and location.
 }
 \examples{
-\dontrun{
 
-esas_table <- Create_ESAS_Table(Read_ESAS_Tables(path = "path_to_download"))
-ESAS_DENSITIES <- Create_Seabird_Density_Cross_Table(
+path_to_read <- system.file("extdata", "ESAS_0827343782", package = "esas")
+esas_table <- Create_ESAS_Table(Read_ESAS_Tables(path = path_to_read))
+Create_Seabird_Density_Cross_Table(
   esas_table = esas_table,
-  probabilities = Calculate_Detection_P_Ship_Based_Surveys(esas_table),
+  probabilities =
+    Calculate_Detection_P_Ship_Based_Surveys(esas_table,
+                                             species_2_analyse = c(720,6000)),
   species_selection = c(720, 6020)
 )
-}
 }
 \seealso{
 Other analysis functions: 
