@@ -24,7 +24,7 @@ column names, or quotes, using the specified file encoding.
 }
 \examples{
 #Read 4 ESAS tables:
-data_path <- system.file("extdata", "ESAS_0827343782", package = "esas")
+data_path <- system.file("extdata", "ESAS_INBO_202401", package = "esas")
 esas_tables_list <- Read_ESAS_Tables(path = data_path,
                                      file_encoding = "UTF-8")
 
