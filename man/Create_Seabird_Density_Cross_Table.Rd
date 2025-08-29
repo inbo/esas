@@ -34,6 +34,18 @@ based on specific criteria, applies detection probability corrections, and
 calculates densities per unit area. The resulting table includes relevant
 metadata such as date, time, area, and location.
 }
+\details{
+Requirements:
+\itemize{
+\item \code{DistanceBins} must be \code{0|50|100|200|300}
+\item \code{PlatformClass} must be \code{30} (ship-based surveys)
+\item \code{Area} must be greater than \code{0}
+\item \code{ObservationDistance} must be \code{F} for flying birds and \code{A}, \code{B}, \code{C}, or \code{D} for swimming/diving birds
+\item \code{Transect} must be \code{True}
+\item \code{Behaviour} must not be \code{99}
+\item Species codes must be provided in \code{species_selection} and must exist in the \code{esas_table}
+}
+}
 \examples{
 
 path_to_read <- system.file("extdata", "ESAS_0827343782", package = "esas")
