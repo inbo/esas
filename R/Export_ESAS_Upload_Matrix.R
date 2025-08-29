@@ -16,7 +16,8 @@
 #' @examples
 #' #Read 4 ESAS tables:
 #' data_path <- system.file("extdata", "ESAS_0827343782", package = "esas")
-#' esas_tables_list <- Read_ESAS_Tables(path = data_path, file_encoding = "UTF-8")
+#' esas_tables_list <- Read_ESAS_Tables(path = data_path,
+#'                                      file_encoding = "UTF-8")
 #'
 #' #Convert tables to upload format:
 #' esas_4_upload <- Transform_ESAS_Tables_4_Upload(campaigns_tbl = esas_tables_list$CAMPAIGNS,
