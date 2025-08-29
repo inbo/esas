@@ -82,7 +82,9 @@ Create_Seabird_Density_Cross_Table <- function(esas_table,
     dplyr::summarise(Count = sum(.data$Count))
 
   base_som <- dplyr::left_join(base, som) %>%
-    tidyr::spread(dplyr::all_of(c("SpeciesCode", "Count")), fill = 0) %>%
+    tidyr::spread(key = "SpeciesCode",
+                  value = "Count",
+                  fill = 0) %>%
     dplyr::arrange(.data$PositionID)
 
   base_som <- as.data.frame(base_som)
