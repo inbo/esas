@@ -19,7 +19,19 @@ Description: Read and process data from European Seabirds At Sea ('ESAS').
 License: MIT + file LICENSE
 URL: https://github.com/inbo/esas, https://inbo.github.io/esas
 BugReports: https://github.com/inbo/esas/issues
-Suggests:
+Depends: 
+    R (>= 4.1.0)
+Imports: 
+    dplyr,
+    magrittr,
+    purrr,
+    readr,
+    rlang,
+    tidyr,
+    utils
+Suggests: 
+    Distance,
+    knitr,
     testthat (>= 3.0.0)
 VignetteBuilder: 
     knitr
@@ -27,4 +39,4 @@ Config/testthat/edition: 3
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.2
