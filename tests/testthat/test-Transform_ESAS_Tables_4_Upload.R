@@ -17,6 +17,25 @@ test_that("Transform_ESAS_Tables_4_Upload() returns data.frame", {
   expect_s3_class(transformed_esas_tables, "data.frame")
 })
 
+test_that("Transform_ESAS_Tables_4_Upload() can transform data downloaded from ESAS", {
+  skip("ISSUE#27: bug where only exactly 17 cols are supported.")
+  # Read some ESAS data to transform
+  data_path <- system.file("extdata", "ESAS_0827343782", package = "esas")
+  esas_tables <- Read_ESAS_Tables(data_path)
+
+  transformed_esas_tables <-
+    Transform_ESAS_Tables_4_Upload(
+      campaigns_tbl = esas_tables$CAMPAIGNS,
+      samples_tbl = esas_tables$SAMPLES,
+      positions_tbl = esas_tables$POSITIONS,
+      observations_tbl = esas_tables$OBSERVATIONS,
+      data_provider = "202",
+      country = "BE"
+    )
+
+  expect_s3_class(transformed_esas_tables, "data.frame")
+})
+
 test_that("Transform_ESAS_Tables_4_Upload() returns correct columns", {
   # Read some ESAS data to transform
   data_path <- system.file("extdata", "ESAS_INBO_202401", package = "esas")
