@@ -97,6 +97,25 @@ test_that("Transform_ESAS_Tables_4_Upload() returns correct columns", {
 test_that("Transform_ESAS_Tables_4_Upload() returns expected number of rows", {
   # Number of rows returned should be sum of rows of input tables + 1 for file
   # information
+  # Read some ESAS data to transform
+  data_path <- system.file("extdata", "ESAS_0827343782", package = "esas")
+  esas_tables <- Read_ESAS_Tables(data_path)
+
+  # Transform the tables to single data.frame
+  transformed_esas_tables <-
+    Transform_ESAS_Tables_4_Upload(
+      campaigns_tbl = esas_tables$CAMPAIGNS,
+      samples_tbl = esas_tables$SAMPLES,
+      positions_tbl = esas_tables$POSITIONS,
+      observations_tbl = esas_tables$OBSERVATIONS,
+      data_provider = "202",
+      country = "BE"
+    )
+
+  expect_identical(
+    nrow(transformed_esas_tables),
+    sum(purrr::map_int(esas_tables, nrow)) + 1 # file information row
+  )
 })
 
 test_that("Transform_ESAS_Tables_4_Upload() returns error on invalid country", {
