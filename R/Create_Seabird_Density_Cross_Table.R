@@ -6,6 +6,15 @@
 #' calculates densities per unit area. The resulting table includes relevant
 #' metadata such as date, time, area, and location.
 #'
+#' Requirements:
+#' - `DistanceBins` must be `0|50|100|200|300`
+#' - `PlatformClass` must be `30` (ship-based surveys)
+#' - `Area` must be greater than `0`
+#' - `ObservationDistance` must be `F` for flying birds and `A`, `B`, `C`, or `D` for swimming/diving birds
+#' - `Transect` must be `True`
+#' - `Behaviour` must not be `99`
+#' - Species codes must be provided in `species_selection` and must exist in the `esas_table`
+#'
 #' @param esas_table A data frame containing seabird observation data as
 #'   resulting from the [Create_ESAS_Table()] function.
 #' @param probabilities A data frame containing detection probabilities for
