@@ -12,6 +12,10 @@
 #' @return A list of 4 data.frames: CAMPAIGNS, SAMPLES, POSITIONS, OBSERVATIONS.
 #' @export
 #' @family read data from ESAS
+#' @examples
+#' data_path <- system.file("extdata", "ESAS_0827343782", package = "esas")
+#' Read_ESAS_Tables(data_path)
+#'
 Read_ESAS_Tables <- function(path, file_encoding = "UTF-8") {
   camp <- utils::read.csv(file.path(path, "Campaigns.csv"),
     fileEncoding = file_encoding
