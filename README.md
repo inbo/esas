@@ -1,6 +1,7 @@
 # esas
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/inbo/esas/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/inbo/esas/actions/workflows/R-CMD-check.yaml)
+[![Codecov test coverage](https://codecov.io/gh/inbo/esas/graph/badge.svg)](https://app.codecov.io/gh/inbo/esas)
 <!-- badges: end -->
 
 ## Goal
