@@ -70,6 +70,14 @@ test_that("Create_ESAS_Table() returns data.frame with expected columns", {
 })
 
 test_that("Create_ESAS_Table() returns sum of rows of tables", {
+  # Read ESAS data from file
+  data_path <- system.file("extdata", "ESAS_0827343782", package = "esas")
+  esas_tables <- Read_ESAS_Tables(data_path)
+
+  expect_identical(
+    nrow(Create_ESAS_Table(esas_tables)),
+    sum(purrr::map_int(esas_tables, nrow))
+    )
 
 })
 
