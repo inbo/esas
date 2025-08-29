@@ -1,5 +1,4 @@
 test_that("Transform_ESAS_Tables_4_Upload() returns data.frame", {
-  skip("test incomplete")
   # Read some ESAS data to transform
   data_path <- system.file("extdata", "ESAS_0827343782", package = "esas")
   esas_tables <- Read_ESAS_Tables(data_path)
