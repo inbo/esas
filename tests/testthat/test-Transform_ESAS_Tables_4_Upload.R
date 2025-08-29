@@ -55,8 +55,8 @@ test_that("Transform_ESAS_Tables_4_Upload() returns expected number of rows", {
     )
 
   expect_identical(
-    nrow(transformed_esas_tables),
-    sum(purrr::map_int(esas_tables, nrow), 1) # file information row
+    as.double(nrow(transformed_esas_tables)),
+    sum(purrr::map_dbl(esas_tables, nrow)) + 1 # file information row
   )
 })
 
