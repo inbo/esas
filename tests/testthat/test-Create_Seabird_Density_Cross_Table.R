@@ -41,5 +41,3 @@ test_that("Create_Seabird_Density_Cross_Table() returns expected columns", {
 test_that("Create_Seabird_Density_Cross_Table() returns error when selected species is absent", {
 
 })
-
-
