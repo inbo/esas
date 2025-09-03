@@ -17,16 +17,17 @@
 #' @family analysis functions
 #'
 #' @examples
-#' \dontrun{
 #' # Read 4 ESAS tables:
-#' ESAS_TABLES_LIST <- Read_ESAS_Tables(
-#'   path = "./Data/ESAS download 2024 04 30",
+#' path_to_read <- system.file("extdata", "ESAS_0827343782", package = "esas")
+#' esas_tables_list <- Read_ESAS_Tables(
+#'   path = path_to_read,
 #'   file_encoding = "UTF-8"
 #' )
 #'
 #' # Create an ESAS master-table:
-#' ESAS_TABLE <- Create_ESAS_Table(esas_tables_list = ESAS_TABLES_LIST)
-#' }
+#' esas_table <- Create_ESAS_Table(esas_tables_list = esas_tables_list)
+#' esas_table
+
 Create_ESAS_Table <- function(esas_tables_list) {
 
   campaigns <- esas_tables_list$CAMPAIGNS %>%

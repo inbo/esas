@@ -34,16 +34,29 @@ based on specific criteria, applies detection probability corrections, and
 calculates densities per unit area. The resulting table includes relevant
 metadata such as date, time, area, and location.
 }
+\details{
+Requirements:
+\itemize{
+\item \code{DistanceBins} must be \code{0|50|100|200|300}
+\item \code{PlatformClass} must be \code{30} (ship-based surveys)
+\item \code{Area} must be greater than \code{0}
+\item \code{ObservationDistance} must be \code{F} for flying birds and \code{A}, \code{B}, \code{C}, or \code{D} for swimming/diving birds
+\item \code{Transect} must be \code{True}
+\item \code{Behaviour} must not be \code{99}
+\item Species codes must be provided in \code{species_selection} and must exist in the \code{esas_table}
+}
+}
 \examples{
-\dontrun{
 
-esas_table <- Create_ESAS_Table(Read_ESAS_Tables(path = "path_to_download"))
-ESAS_DENSITIES <- Create_Seabird_Density_Cross_Table(
+path_to_read <- system.file("extdata", "ESAS_0827343782", package = "esas")
+esas_table <- Create_ESAS_Table(Read_ESAS_Tables(path = path_to_read))
+Create_Seabird_Density_Cross_Table(
   esas_table = esas_table,
-  probabilities = Calculate_Detection_P_Ship_Based_Surveys(esas_table),
+  probabilities =
+    Calculate_Detection_P_Ship_Based_Surveys(esas_table,
+                                             species_2_analyse = c(720,6000)),
   species_selection = c(720, 6020)
 )
-}
 }
 \seealso{
 Other analysis functions: 
