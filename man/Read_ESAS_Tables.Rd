@@ -21,4 +21,9 @@ A list of 4 data.frames: CAMPAIGNS, SAMPLES, POSITIONS, OBSERVATIONS.
 Read 4 csv files (CAMPAIGNS, SAMPLES, POSITIONS, OBSERVATIONS) and combine
 them into a list of data.frames.
 }
+\examples{
+data_path <- system.file("extdata", "ESAS_0827343782", package = "esas")
+Read_ESAS_Tables(data_path)
+
+}
 \concept{read data from ESAS}
