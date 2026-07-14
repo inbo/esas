@@ -6,6 +6,15 @@
 #' calculates densities per unit area. The resulting table includes relevant
 #' metadata such as date, time, area, and location.
 #'
+#' Requirements:
+#' - `DistanceBins` must be `0|50|100|200|300`
+#' - `PlatformClass` must be `30` (ship-based surveys)
+#' - `Area` must be greater than `0`
+#' - `ObservationDistance` must be `F` for flying birds and `A`, `B`, `C`, or `D` for swimming/diving birds
+#' - `Transect` must be `True`
+#' - `Behaviour` must not be `99`
+#' - Species codes must be provided in `species_selection` and must exist in the `esas_table`
+#'
 #' @param esas_table A data frame containing seabird observation data as
 #'   resulting from the [Create_ESAS_Table()] function.
 #' @param probabilities A data frame containing detection probabilities for
@@ -22,15 +31,17 @@
 #' @importFrom dplyr .data
 #'
 #' @examples
-#' \dontrun{
 #'
-#' esas_table <- Create_ESAS_Table(Read_ESAS_Tables(path = "path_to_download"))
-#' ESAS_DENSITIES <- Create_Seabird_Density_Cross_Table(
+#' path_to_read <- system.file("extdata", "ESAS_0827343782", package = "esas")
+#' esas_table <- Create_ESAS_Table(Read_ESAS_Tables(path = path_to_read))
+#' Create_Seabird_Density_Cross_Table(
 #'   esas_table = esas_table,
-#'   probabilities = Calculate_Detection_P_Ship_Based_Surveys(esas_table),
+#'   probabilities =
+#'     Calculate_Detection_P_Ship_Based_Surveys(esas_table,
+#'                                              species_2_analyse = c(720,6000)),
 #'   species_selection = c(720, 6020)
 #' )
-#' }
+
 Create_Seabird_Density_Cross_Table <- function(esas_table,
                                                probabilities,
                                                species_selection) {
@@ -71,7 +82,7 @@ Create_Seabird_Density_Cross_Table <- function(esas_table,
   )
 
   base <- esas_table %>%
-    tidyr::expand(.data$PositionID, .data$species_selection) %>%
+    tidyr::expand(.data$PositionID, species_selection) %>%
     dplyr::rename(SpeciesCode = dplyr::all_of("species_selection"))
 
   som <- observations_select %>%
@@ -79,7 +90,9 @@ Create_Seabird_Density_Cross_Table <- function(esas_table,
     dplyr::summarise(Count = sum(.data$Count))
 
   base_som <- dplyr::left_join(base, som) %>%
-    tidyr::spread(dplyr::all_of(c("SpeciesCode", "Count")), fill = 0) %>%
+    tidyr::spread(key = "SpeciesCode",
+                  value = "Count",
+                  fill = 0) %>%
     dplyr::arrange(.data$PositionID)
 
   base_som <- as.data.frame(base_som)
