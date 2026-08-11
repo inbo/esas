@@ -51,7 +51,7 @@ Calculate_Detection_P_Ship_Based_Surveys <- function(esas_table_2_analyse,
       .data$Transect %in% c("True"),
       .data$ObservationDistance %in% c("A", "B", "C", "D"),
       .data$SpeciesCode %in% species_2_analyse,
-      !.data$Behaviour %in% c("99")
+      !.data$Behaviour %in% c("99") # remove dead animals
     ) %>%
     dplyr::mutate(distance = dplyr::recode(
       .data$ObservationDistance,
